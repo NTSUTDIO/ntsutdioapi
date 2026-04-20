@@ -57,6 +57,28 @@ app.get('/api/data/:id', async (req, res) => {
   res.json(data);
 });
 
+// API สำหรับ Joke Generator
+app.get('/api/jokes', async (req, res) => {
+  try {
+    const response = await fetch('https://official-joke-api.appspot.com/jokes/random');
+    const joke = await response.json();
+    
+    res.json({
+      success: true,
+      joke: `${joke.setup} - ${joke.punchline}`,
+      setup: joke.setup,
+      punchline: joke.punchline,
+      type: joke.type,
+      id: joke.id
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch joke from external API'
+    });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log('Server running on port', PORT);
